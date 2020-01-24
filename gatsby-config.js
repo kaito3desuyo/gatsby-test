@@ -16,6 +16,15 @@ module.exports = {
             options: {
                 fileName: `types/graphql-types.d.ts`
             }
-        }
+        },
+        {
+            resolve: "gatsby-source-filesystem",
+            options: {
+                path: "./data/"
+            }
+        },
+        "gatsby-transformer-json",
+        "gatsby-transformer-sharp",
+        "gatsby-plugin-sharp"
     ]
 };

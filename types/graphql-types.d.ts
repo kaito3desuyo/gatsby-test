@@ -76,6 +76,8 @@ export type Directory = Node & {
   ctime: Scalars['Date'],
   birthtime?: Maybe<Scalars['Date']>,
   birthtimeMs?: Maybe<Scalars['Float']>,
+  blksize?: Maybe<Scalars['Int']>,
+  blocks?: Maybe<Scalars['Int']>,
   id: Scalars['ID'],
   parent?: Maybe<Node>,
   children: Array<Node>,
@@ -197,6 +199,8 @@ export type DirectoryFieldsEnum =
   'ctime' |
   'birthtime' |
   'birthtimeMs' |
+  'blksize' |
+  'blocks' |
   'id' |
   'parent___id' |
   'parent___parent___id' |
@@ -316,6 +320,8 @@ export type DirectoryFilterInput = {
   ctime?: Maybe<DateQueryOperatorInput>,
   birthtime?: Maybe<DateQueryOperatorInput>,
   birthtimeMs?: Maybe<FloatQueryOperatorInput>,
+  blksize?: Maybe<IntQueryOperatorInput>,
+  blocks?: Maybe<IntQueryOperatorInput>,
   id?: Maybe<StringQueryOperatorInput>,
   parent?: Maybe<NodeFilterInput>,
   children?: Maybe<NodeFilterListInput>,
@@ -334,6 +340,12 @@ export type DirectoryGroupConnection = {
 export type DirectorySortInput = {
   fields?: Maybe<Array<Maybe<DirectoryFieldsEnum>>>,
   order?: Maybe<Array<Maybe<SortOrderEnum>>>,
+};
+
+export type DuotoneGradient = {
+  highlight: Scalars['String'],
+  shadow: Scalars['String'],
+  opacity?: Maybe<Scalars['Int']>,
 };
 
 export type File = Node & {
@@ -368,10 +380,16 @@ export type File = Node & {
   ctime: Scalars['Date'],
   birthtime?: Maybe<Scalars['Date']>,
   birthtimeMs?: Maybe<Scalars['Float']>,
+  blksize?: Maybe<Scalars['Int']>,
+  blocks?: Maybe<Scalars['Int']>,
+  /** Copy file to static directory and return public url to it */
+  publicURL?: Maybe<Scalars['String']>,
+  childImageSharp?: Maybe<ImageSharp>,
   id: Scalars['ID'],
   parent?: Maybe<Node>,
   children: Array<Node>,
   internal: Internal,
+  childrenProductsJson?: Maybe<Array<Maybe<ProductsJson>>>,
 };
 
 
@@ -489,6 +507,592 @@ export type FileFieldsEnum =
   'ctime' |
   'birthtime' |
   'birthtimeMs' |
+  'blksize' |
+  'blocks' |
+  'publicURL' |
+  'childImageSharp___fixed___base64' |
+  'childImageSharp___fixed___tracedSVG' |
+  'childImageSharp___fixed___aspectRatio' |
+  'childImageSharp___fixed___width' |
+  'childImageSharp___fixed___height' |
+  'childImageSharp___fixed___src' |
+  'childImageSharp___fixed___srcSet' |
+  'childImageSharp___fixed___srcWebp' |
+  'childImageSharp___fixed___srcSetWebp' |
+  'childImageSharp___fixed___originalName' |
+  'childImageSharp___resolutions___base64' |
+  'childImageSharp___resolutions___tracedSVG' |
+  'childImageSharp___resolutions___aspectRatio' |
+  'childImageSharp___resolutions___width' |
+  'childImageSharp___resolutions___height' |
+  'childImageSharp___resolutions___src' |
+  'childImageSharp___resolutions___srcSet' |
+  'childImageSharp___resolutions___srcWebp' |
+  'childImageSharp___resolutions___srcSetWebp' |
+  'childImageSharp___resolutions___originalName' |
+  'childImageSharp___fluid___base64' |
+  'childImageSharp___fluid___tracedSVG' |
+  'childImageSharp___fluid___aspectRatio' |
+  'childImageSharp___fluid___src' |
+  'childImageSharp___fluid___srcSet' |
+  'childImageSharp___fluid___srcWebp' |
+  'childImageSharp___fluid___srcSetWebp' |
+  'childImageSharp___fluid___sizes' |
+  'childImageSharp___fluid___originalImg' |
+  'childImageSharp___fluid___originalName' |
+  'childImageSharp___fluid___presentationWidth' |
+  'childImageSharp___fluid___presentationHeight' |
+  'childImageSharp___sizes___base64' |
+  'childImageSharp___sizes___tracedSVG' |
+  'childImageSharp___sizes___aspectRatio' |
+  'childImageSharp___sizes___src' |
+  'childImageSharp___sizes___srcSet' |
+  'childImageSharp___sizes___srcWebp' |
+  'childImageSharp___sizes___srcSetWebp' |
+  'childImageSharp___sizes___sizes' |
+  'childImageSharp___sizes___originalImg' |
+  'childImageSharp___sizes___originalName' |
+  'childImageSharp___sizes___presentationWidth' |
+  'childImageSharp___sizes___presentationHeight' |
+  'childImageSharp___original___width' |
+  'childImageSharp___original___height' |
+  'childImageSharp___original___src' |
+  'childImageSharp___resize___src' |
+  'childImageSharp___resize___tracedSVG' |
+  'childImageSharp___resize___width' |
+  'childImageSharp___resize___height' |
+  'childImageSharp___resize___aspectRatio' |
+  'childImageSharp___resize___originalName' |
+  'childImageSharp___id' |
+  'childImageSharp___parent___id' |
+  'childImageSharp___parent___parent___id' |
+  'childImageSharp___parent___parent___children' |
+  'childImageSharp___parent___children' |
+  'childImageSharp___parent___children___id' |
+  'childImageSharp___parent___children___children' |
+  'childImageSharp___parent___internal___content' |
+  'childImageSharp___parent___internal___contentDigest' |
+  'childImageSharp___parent___internal___description' |
+  'childImageSharp___parent___internal___fieldOwners' |
+  'childImageSharp___parent___internal___ignoreType' |
+  'childImageSharp___parent___internal___mediaType' |
+  'childImageSharp___parent___internal___owner' |
+  'childImageSharp___parent___internal___type' |
+  'childImageSharp___children' |
+  'childImageSharp___children___id' |
+  'childImageSharp___children___parent___id' |
+  'childImageSharp___children___parent___children' |
+  'childImageSharp___children___children' |
+  'childImageSharp___children___children___id' |
+  'childImageSharp___children___children___children' |
+  'childImageSharp___children___internal___content' |
+  'childImageSharp___children___internal___contentDigest' |
+  'childImageSharp___children___internal___description' |
+  'childImageSharp___children___internal___fieldOwners' |
+  'childImageSharp___children___internal___ignoreType' |
+  'childImageSharp___children___internal___mediaType' |
+  'childImageSharp___children___internal___owner' |
+  'childImageSharp___children___internal___type' |
+  'childImageSharp___internal___content' |
+  'childImageSharp___internal___contentDigest' |
+  'childImageSharp___internal___description' |
+  'childImageSharp___internal___fieldOwners' |
+  'childImageSharp___internal___ignoreType' |
+  'childImageSharp___internal___mediaType' |
+  'childImageSharp___internal___owner' |
+  'childImageSharp___internal___type' |
+  'id' |
+  'parent___id' |
+  'parent___parent___id' |
+  'parent___parent___parent___id' |
+  'parent___parent___parent___children' |
+  'parent___parent___children' |
+  'parent___parent___children___id' |
+  'parent___parent___children___children' |
+  'parent___parent___internal___content' |
+  'parent___parent___internal___contentDigest' |
+  'parent___parent___internal___description' |
+  'parent___parent___internal___fieldOwners' |
+  'parent___parent___internal___ignoreType' |
+  'parent___parent___internal___mediaType' |
+  'parent___parent___internal___owner' |
+  'parent___parent___internal___type' |
+  'parent___children' |
+  'parent___children___id' |
+  'parent___children___parent___id' |
+  'parent___children___parent___children' |
+  'parent___children___children' |
+  'parent___children___children___id' |
+  'parent___children___children___children' |
+  'parent___children___internal___content' |
+  'parent___children___internal___contentDigest' |
+  'parent___children___internal___description' |
+  'parent___children___internal___fieldOwners' |
+  'parent___children___internal___ignoreType' |
+  'parent___children___internal___mediaType' |
+  'parent___children___internal___owner' |
+  'parent___children___internal___type' |
+  'parent___internal___content' |
+  'parent___internal___contentDigest' |
+  'parent___internal___description' |
+  'parent___internal___fieldOwners' |
+  'parent___internal___ignoreType' |
+  'parent___internal___mediaType' |
+  'parent___internal___owner' |
+  'parent___internal___type' |
+  'children' |
+  'children___id' |
+  'children___parent___id' |
+  'children___parent___parent___id' |
+  'children___parent___parent___children' |
+  'children___parent___children' |
+  'children___parent___children___id' |
+  'children___parent___children___children' |
+  'children___parent___internal___content' |
+  'children___parent___internal___contentDigest' |
+  'children___parent___internal___description' |
+  'children___parent___internal___fieldOwners' |
+  'children___parent___internal___ignoreType' |
+  'children___parent___internal___mediaType' |
+  'children___parent___internal___owner' |
+  'children___parent___internal___type' |
+  'children___children' |
+  'children___children___id' |
+  'children___children___parent___id' |
+  'children___children___parent___children' |
+  'children___children___children' |
+  'children___children___children___id' |
+  'children___children___children___children' |
+  'children___children___internal___content' |
+  'children___children___internal___contentDigest' |
+  'children___children___internal___description' |
+  'children___children___internal___fieldOwners' |
+  'children___children___internal___ignoreType' |
+  'children___children___internal___mediaType' |
+  'children___children___internal___owner' |
+  'children___children___internal___type' |
+  'children___internal___content' |
+  'children___internal___contentDigest' |
+  'children___internal___description' |
+  'children___internal___fieldOwners' |
+  'children___internal___ignoreType' |
+  'children___internal___mediaType' |
+  'children___internal___owner' |
+  'children___internal___type' |
+  'internal___content' |
+  'internal___contentDigest' |
+  'internal___description' |
+  'internal___fieldOwners' |
+  'internal___ignoreType' |
+  'internal___mediaType' |
+  'internal___owner' |
+  'internal___type' |
+  'childrenProductsJson' |
+  'childrenProductsJson___id' |
+  'childrenProductsJson___parent___id' |
+  'childrenProductsJson___parent___parent___id' |
+  'childrenProductsJson___parent___parent___children' |
+  'childrenProductsJson___parent___children' |
+  'childrenProductsJson___parent___children___id' |
+  'childrenProductsJson___parent___children___children' |
+  'childrenProductsJson___parent___internal___content' |
+  'childrenProductsJson___parent___internal___contentDigest' |
+  'childrenProductsJson___parent___internal___description' |
+  'childrenProductsJson___parent___internal___fieldOwners' |
+  'childrenProductsJson___parent___internal___ignoreType' |
+  'childrenProductsJson___parent___internal___mediaType' |
+  'childrenProductsJson___parent___internal___owner' |
+  'childrenProductsJson___parent___internal___type' |
+  'childrenProductsJson___children' |
+  'childrenProductsJson___children___id' |
+  'childrenProductsJson___children___parent___id' |
+  'childrenProductsJson___children___parent___children' |
+  'childrenProductsJson___children___children' |
+  'childrenProductsJson___children___children___id' |
+  'childrenProductsJson___children___children___children' |
+  'childrenProductsJson___children___internal___content' |
+  'childrenProductsJson___children___internal___contentDigest' |
+  'childrenProductsJson___children___internal___description' |
+  'childrenProductsJson___children___internal___fieldOwners' |
+  'childrenProductsJson___children___internal___ignoreType' |
+  'childrenProductsJson___children___internal___mediaType' |
+  'childrenProductsJson___children___internal___owner' |
+  'childrenProductsJson___children___internal___type' |
+  'childrenProductsJson___internal___content' |
+  'childrenProductsJson___internal___contentDigest' |
+  'childrenProductsJson___internal___description' |
+  'childrenProductsJson___internal___fieldOwners' |
+  'childrenProductsJson___internal___ignoreType' |
+  'childrenProductsJson___internal___mediaType' |
+  'childrenProductsJson___internal___owner' |
+  'childrenProductsJson___internal___type' |
+  'childrenProductsJson___title' |
+  'childrenProductsJson___slug' |
+  'childrenProductsJson___description' |
+  'childrenProductsJson___price' |
+  'childrenProductsJson___image___sourceInstanceName' |
+  'childrenProductsJson___image___absolutePath' |
+  'childrenProductsJson___image___relativePath' |
+  'childrenProductsJson___image___extension' |
+  'childrenProductsJson___image___size' |
+  'childrenProductsJson___image___prettySize' |
+  'childrenProductsJson___image___modifiedTime' |
+  'childrenProductsJson___image___accessTime' |
+  'childrenProductsJson___image___changeTime' |
+  'childrenProductsJson___image___birthTime' |
+  'childrenProductsJson___image___root' |
+  'childrenProductsJson___image___dir' |
+  'childrenProductsJson___image___base' |
+  'childrenProductsJson___image___ext' |
+  'childrenProductsJson___image___name' |
+  'childrenProductsJson___image___relativeDirectory' |
+  'childrenProductsJson___image___dev' |
+  'childrenProductsJson___image___mode' |
+  'childrenProductsJson___image___nlink' |
+  'childrenProductsJson___image___uid' |
+  'childrenProductsJson___image___gid' |
+  'childrenProductsJson___image___rdev' |
+  'childrenProductsJson___image___ino' |
+  'childrenProductsJson___image___atimeMs' |
+  'childrenProductsJson___image___mtimeMs' |
+  'childrenProductsJson___image___ctimeMs' |
+  'childrenProductsJson___image___atime' |
+  'childrenProductsJson___image___mtime' |
+  'childrenProductsJson___image___ctime' |
+  'childrenProductsJson___image___birthtime' |
+  'childrenProductsJson___image___birthtimeMs' |
+  'childrenProductsJson___image___blksize' |
+  'childrenProductsJson___image___blocks' |
+  'childrenProductsJson___image___publicURL' |
+  'childrenProductsJson___image___childImageSharp___id' |
+  'childrenProductsJson___image___childImageSharp___children' |
+  'childrenProductsJson___image___id' |
+  'childrenProductsJson___image___parent___id' |
+  'childrenProductsJson___image___parent___children' |
+  'childrenProductsJson___image___children' |
+  'childrenProductsJson___image___children___id' |
+  'childrenProductsJson___image___children___children' |
+  'childrenProductsJson___image___internal___content' |
+  'childrenProductsJson___image___internal___contentDigest' |
+  'childrenProductsJson___image___internal___description' |
+  'childrenProductsJson___image___internal___fieldOwners' |
+  'childrenProductsJson___image___internal___ignoreType' |
+  'childrenProductsJson___image___internal___mediaType' |
+  'childrenProductsJson___image___internal___owner' |
+  'childrenProductsJson___image___internal___type' |
+  'childrenProductsJson___image___childrenProductsJson' |
+  'childrenProductsJson___image___childrenProductsJson___id' |
+  'childrenProductsJson___image___childrenProductsJson___children' |
+  'childrenProductsJson___image___childrenProductsJson___title' |
+  'childrenProductsJson___image___childrenProductsJson___slug' |
+  'childrenProductsJson___image___childrenProductsJson___description' |
+  'childrenProductsJson___image___childrenProductsJson___price';
+
+export type FileFilterInput = {
+  sourceInstanceName?: Maybe<StringQueryOperatorInput>,
+  absolutePath?: Maybe<StringQueryOperatorInput>,
+  relativePath?: Maybe<StringQueryOperatorInput>,
+  extension?: Maybe<StringQueryOperatorInput>,
+  size?: Maybe<IntQueryOperatorInput>,
+  prettySize?: Maybe<StringQueryOperatorInput>,
+  modifiedTime?: Maybe<DateQueryOperatorInput>,
+  accessTime?: Maybe<DateQueryOperatorInput>,
+  changeTime?: Maybe<DateQueryOperatorInput>,
+  birthTime?: Maybe<DateQueryOperatorInput>,
+  root?: Maybe<StringQueryOperatorInput>,
+  dir?: Maybe<StringQueryOperatorInput>,
+  base?: Maybe<StringQueryOperatorInput>,
+  ext?: Maybe<StringQueryOperatorInput>,
+  name?: Maybe<StringQueryOperatorInput>,
+  relativeDirectory?: Maybe<StringQueryOperatorInput>,
+  dev?: Maybe<IntQueryOperatorInput>,
+  mode?: Maybe<IntQueryOperatorInput>,
+  nlink?: Maybe<IntQueryOperatorInput>,
+  uid?: Maybe<IntQueryOperatorInput>,
+  gid?: Maybe<IntQueryOperatorInput>,
+  rdev?: Maybe<IntQueryOperatorInput>,
+  ino?: Maybe<FloatQueryOperatorInput>,
+  atimeMs?: Maybe<FloatQueryOperatorInput>,
+  mtimeMs?: Maybe<FloatQueryOperatorInput>,
+  ctimeMs?: Maybe<FloatQueryOperatorInput>,
+  atime?: Maybe<DateQueryOperatorInput>,
+  mtime?: Maybe<DateQueryOperatorInput>,
+  ctime?: Maybe<DateQueryOperatorInput>,
+  birthtime?: Maybe<DateQueryOperatorInput>,
+  birthtimeMs?: Maybe<FloatQueryOperatorInput>,
+  blksize?: Maybe<IntQueryOperatorInput>,
+  blocks?: Maybe<IntQueryOperatorInput>,
+  publicURL?: Maybe<StringQueryOperatorInput>,
+  childImageSharp?: Maybe<ImageSharpFilterInput>,
+  id?: Maybe<StringQueryOperatorInput>,
+  parent?: Maybe<NodeFilterInput>,
+  children?: Maybe<NodeFilterListInput>,
+  internal?: Maybe<InternalFilterInput>,
+  childrenProductsJson?: Maybe<ProductsJsonFilterListInput>,
+};
+
+export type FileGroupConnection = {
+  totalCount: Scalars['Int'],
+  edges: Array<FileEdge>,
+  nodes: Array<File>,
+  pageInfo: PageInfo,
+  field: Scalars['String'],
+  fieldValue?: Maybe<Scalars['String']>,
+};
+
+export type FileSortInput = {
+  fields?: Maybe<Array<Maybe<FileFieldsEnum>>>,
+  order?: Maybe<Array<Maybe<SortOrderEnum>>>,
+};
+
+export type FloatQueryOperatorInput = {
+  eq?: Maybe<Scalars['Float']>,
+  ne?: Maybe<Scalars['Float']>,
+  gt?: Maybe<Scalars['Float']>,
+  gte?: Maybe<Scalars['Float']>,
+  lt?: Maybe<Scalars['Float']>,
+  lte?: Maybe<Scalars['Float']>,
+  in?: Maybe<Array<Maybe<Scalars['Float']>>>,
+  nin?: Maybe<Array<Maybe<Scalars['Float']>>>,
+};
+
+export type ImageCropFocus = 
+  'CENTER' |
+  'NORTH' |
+  'NORTHEAST' |
+  'EAST' |
+  'SOUTHEAST' |
+  'SOUTH' |
+  'SOUTHWEST' |
+  'WEST' |
+  'NORTHWEST' |
+  'ENTROPY' |
+  'ATTENTION';
+
+export type ImageFit = 
+  'COVER' |
+  'CONTAIN' |
+  'FILL';
+
+export type ImageFormat = 
+  'NO_CHANGE' |
+  'JPG' |
+  'PNG' |
+  'WEBP';
+
+export type ImageSharp = Node & {
+  fixed?: Maybe<ImageSharpFixed>,
+  resolutions?: Maybe<ImageSharpResolutions>,
+  fluid?: Maybe<ImageSharpFluid>,
+  sizes?: Maybe<ImageSharpSizes>,
+  original?: Maybe<ImageSharpOriginal>,
+  resize?: Maybe<ImageSharpResize>,
+  id: Scalars['ID'],
+  parent?: Maybe<Node>,
+  children: Array<Node>,
+  internal: Internal,
+};
+
+
+export type ImageSharpFixedArgs = {
+  width?: Maybe<Scalars['Int']>,
+  height?: Maybe<Scalars['Int']>,
+  base64Width?: Maybe<Scalars['Int']>,
+  jpegProgressive?: Maybe<Scalars['Boolean']>,
+  pngCompressionSpeed?: Maybe<Scalars['Int']>,
+  grayscale?: Maybe<Scalars['Boolean']>,
+  duotone?: Maybe<DuotoneGradient>,
+  traceSVG?: Maybe<Potrace>,
+  quality?: Maybe<Scalars['Int']>,
+  jpegQuality?: Maybe<Scalars['Int']>,
+  pngQuality?: Maybe<Scalars['Int']>,
+  webpQuality?: Maybe<Scalars['Int']>,
+  toFormat?: Maybe<ImageFormat>,
+  toFormatBase64?: Maybe<ImageFormat>,
+  cropFocus?: Maybe<ImageCropFocus>,
+  fit?: Maybe<ImageFit>,
+  background?: Maybe<Scalars['String']>,
+  rotate?: Maybe<Scalars['Int']>,
+  trim?: Maybe<Scalars['Float']>
+};
+
+
+export type ImageSharpResolutionsArgs = {
+  width?: Maybe<Scalars['Int']>,
+  height?: Maybe<Scalars['Int']>,
+  base64Width?: Maybe<Scalars['Int']>,
+  jpegProgressive?: Maybe<Scalars['Boolean']>,
+  pngCompressionSpeed?: Maybe<Scalars['Int']>,
+  grayscale?: Maybe<Scalars['Boolean']>,
+  duotone?: Maybe<DuotoneGradient>,
+  traceSVG?: Maybe<Potrace>,
+  quality?: Maybe<Scalars['Int']>,
+  jpegQuality?: Maybe<Scalars['Int']>,
+  pngQuality?: Maybe<Scalars['Int']>,
+  webpQuality?: Maybe<Scalars['Int']>,
+  toFormat?: Maybe<ImageFormat>,
+  toFormatBase64?: Maybe<ImageFormat>,
+  cropFocus?: Maybe<ImageCropFocus>,
+  fit?: Maybe<ImageFit>,
+  background?: Maybe<Scalars['String']>,
+  rotate?: Maybe<Scalars['Int']>,
+  trim?: Maybe<Scalars['Float']>
+};
+
+
+export type ImageSharpFluidArgs = {
+  maxWidth?: Maybe<Scalars['Int']>,
+  maxHeight?: Maybe<Scalars['Int']>,
+  base64Width?: Maybe<Scalars['Int']>,
+  grayscale?: Maybe<Scalars['Boolean']>,
+  jpegProgressive?: Maybe<Scalars['Boolean']>,
+  pngCompressionSpeed?: Maybe<Scalars['Int']>,
+  duotone?: Maybe<DuotoneGradient>,
+  traceSVG?: Maybe<Potrace>,
+  quality?: Maybe<Scalars['Int']>,
+  jpegQuality?: Maybe<Scalars['Int']>,
+  pngQuality?: Maybe<Scalars['Int']>,
+  webpQuality?: Maybe<Scalars['Int']>,
+  toFormat?: Maybe<ImageFormat>,
+  toFormatBase64?: Maybe<ImageFormat>,
+  cropFocus?: Maybe<ImageCropFocus>,
+  fit?: Maybe<ImageFit>,
+  background?: Maybe<Scalars['String']>,
+  rotate?: Maybe<Scalars['Int']>,
+  trim?: Maybe<Scalars['Float']>,
+  sizes?: Maybe<Scalars['String']>,
+  srcSetBreakpoints?: Maybe<Array<Maybe<Scalars['Int']>>>
+};
+
+
+export type ImageSharpSizesArgs = {
+  maxWidth?: Maybe<Scalars['Int']>,
+  maxHeight?: Maybe<Scalars['Int']>,
+  base64Width?: Maybe<Scalars['Int']>,
+  grayscale?: Maybe<Scalars['Boolean']>,
+  jpegProgressive?: Maybe<Scalars['Boolean']>,
+  pngCompressionSpeed?: Maybe<Scalars['Int']>,
+  duotone?: Maybe<DuotoneGradient>,
+  traceSVG?: Maybe<Potrace>,
+  quality?: Maybe<Scalars['Int']>,
+  jpegQuality?: Maybe<Scalars['Int']>,
+  pngQuality?: Maybe<Scalars['Int']>,
+  webpQuality?: Maybe<Scalars['Int']>,
+  toFormat?: Maybe<ImageFormat>,
+  toFormatBase64?: Maybe<ImageFormat>,
+  cropFocus?: Maybe<ImageCropFocus>,
+  fit?: Maybe<ImageFit>,
+  background?: Maybe<Scalars['String']>,
+  rotate?: Maybe<Scalars['Int']>,
+  trim?: Maybe<Scalars['Float']>,
+  sizes?: Maybe<Scalars['String']>,
+  srcSetBreakpoints?: Maybe<Array<Maybe<Scalars['Int']>>>
+};
+
+
+export type ImageSharpResizeArgs = {
+  width?: Maybe<Scalars['Int']>,
+  height?: Maybe<Scalars['Int']>,
+  quality?: Maybe<Scalars['Int']>,
+  jpegQuality?: Maybe<Scalars['Int']>,
+  pngQuality?: Maybe<Scalars['Int']>,
+  webpQuality?: Maybe<Scalars['Int']>,
+  jpegProgressive?: Maybe<Scalars['Boolean']>,
+  pngCompressionLevel?: Maybe<Scalars['Int']>,
+  pngCompressionSpeed?: Maybe<Scalars['Int']>,
+  grayscale?: Maybe<Scalars['Boolean']>,
+  duotone?: Maybe<DuotoneGradient>,
+  base64?: Maybe<Scalars['Boolean']>,
+  traceSVG?: Maybe<Potrace>,
+  toFormat?: Maybe<ImageFormat>,
+  cropFocus?: Maybe<ImageCropFocus>,
+  fit?: Maybe<ImageFit>,
+  background?: Maybe<Scalars['String']>,
+  rotate?: Maybe<Scalars['Int']>,
+  trim?: Maybe<Scalars['Float']>
+};
+
+export type ImageSharpConnection = {
+  totalCount: Scalars['Int'],
+  edges: Array<ImageSharpEdge>,
+  nodes: Array<ImageSharp>,
+  pageInfo: PageInfo,
+  distinct: Array<Scalars['String']>,
+  group: Array<ImageSharpGroupConnection>,
+};
+
+
+export type ImageSharpConnectionDistinctArgs = {
+  field: ImageSharpFieldsEnum
+};
+
+
+export type ImageSharpConnectionGroupArgs = {
+  skip?: Maybe<Scalars['Int']>,
+  limit?: Maybe<Scalars['Int']>,
+  field: ImageSharpFieldsEnum
+};
+
+export type ImageSharpEdge = {
+  next?: Maybe<ImageSharp>,
+  node: ImageSharp,
+  previous?: Maybe<ImageSharp>,
+};
+
+export type ImageSharpFieldsEnum = 
+  'fixed___base64' |
+  'fixed___tracedSVG' |
+  'fixed___aspectRatio' |
+  'fixed___width' |
+  'fixed___height' |
+  'fixed___src' |
+  'fixed___srcSet' |
+  'fixed___srcWebp' |
+  'fixed___srcSetWebp' |
+  'fixed___originalName' |
+  'resolutions___base64' |
+  'resolutions___tracedSVG' |
+  'resolutions___aspectRatio' |
+  'resolutions___width' |
+  'resolutions___height' |
+  'resolutions___src' |
+  'resolutions___srcSet' |
+  'resolutions___srcWebp' |
+  'resolutions___srcSetWebp' |
+  'resolutions___originalName' |
+  'fluid___base64' |
+  'fluid___tracedSVG' |
+  'fluid___aspectRatio' |
+  'fluid___src' |
+  'fluid___srcSet' |
+  'fluid___srcWebp' |
+  'fluid___srcSetWebp' |
+  'fluid___sizes' |
+  'fluid___originalImg' |
+  'fluid___originalName' |
+  'fluid___presentationWidth' |
+  'fluid___presentationHeight' |
+  'sizes___base64' |
+  'sizes___tracedSVG' |
+  'sizes___aspectRatio' |
+  'sizes___src' |
+  'sizes___srcSet' |
+  'sizes___srcWebp' |
+  'sizes___srcSetWebp' |
+  'sizes___sizes' |
+  'sizes___originalImg' |
+  'sizes___originalName' |
+  'sizes___presentationWidth' |
+  'sizes___presentationHeight' |
+  'original___width' |
+  'original___height' |
+  'original___src' |
+  'resize___src' |
+  'resize___tracedSVG' |
+  'resize___width' |
+  'resize___height' |
+  'resize___aspectRatio' |
+  'resize___originalName' |
   'id' |
   'parent___id' |
   'parent___parent___id' |
@@ -576,67 +1180,173 @@ export type FileFieldsEnum =
   'internal___owner' |
   'internal___type';
 
-export type FileFilterInput = {
-  sourceInstanceName?: Maybe<StringQueryOperatorInput>,
-  absolutePath?: Maybe<StringQueryOperatorInput>,
-  relativePath?: Maybe<StringQueryOperatorInput>,
-  extension?: Maybe<StringQueryOperatorInput>,
-  size?: Maybe<IntQueryOperatorInput>,
-  prettySize?: Maybe<StringQueryOperatorInput>,
-  modifiedTime?: Maybe<DateQueryOperatorInput>,
-  accessTime?: Maybe<DateQueryOperatorInput>,
-  changeTime?: Maybe<DateQueryOperatorInput>,
-  birthTime?: Maybe<DateQueryOperatorInput>,
-  root?: Maybe<StringQueryOperatorInput>,
-  dir?: Maybe<StringQueryOperatorInput>,
-  base?: Maybe<StringQueryOperatorInput>,
-  ext?: Maybe<StringQueryOperatorInput>,
-  name?: Maybe<StringQueryOperatorInput>,
-  relativeDirectory?: Maybe<StringQueryOperatorInput>,
-  dev?: Maybe<IntQueryOperatorInput>,
-  mode?: Maybe<IntQueryOperatorInput>,
-  nlink?: Maybe<IntQueryOperatorInput>,
-  uid?: Maybe<IntQueryOperatorInput>,
-  gid?: Maybe<IntQueryOperatorInput>,
-  rdev?: Maybe<IntQueryOperatorInput>,
-  ino?: Maybe<FloatQueryOperatorInput>,
-  atimeMs?: Maybe<FloatQueryOperatorInput>,
-  mtimeMs?: Maybe<FloatQueryOperatorInput>,
-  ctimeMs?: Maybe<FloatQueryOperatorInput>,
-  atime?: Maybe<DateQueryOperatorInput>,
-  mtime?: Maybe<DateQueryOperatorInput>,
-  ctime?: Maybe<DateQueryOperatorInput>,
-  birthtime?: Maybe<DateQueryOperatorInput>,
-  birthtimeMs?: Maybe<FloatQueryOperatorInput>,
+export type ImageSharpFilterInput = {
+  fixed?: Maybe<ImageSharpFixedFilterInput>,
+  resolutions?: Maybe<ImageSharpResolutionsFilterInput>,
+  fluid?: Maybe<ImageSharpFluidFilterInput>,
+  sizes?: Maybe<ImageSharpSizesFilterInput>,
+  original?: Maybe<ImageSharpOriginalFilterInput>,
+  resize?: Maybe<ImageSharpResizeFilterInput>,
   id?: Maybe<StringQueryOperatorInput>,
   parent?: Maybe<NodeFilterInput>,
   children?: Maybe<NodeFilterListInput>,
   internal?: Maybe<InternalFilterInput>,
 };
 
-export type FileGroupConnection = {
+export type ImageSharpFixed = {
+  base64?: Maybe<Scalars['String']>,
+  tracedSVG?: Maybe<Scalars['String']>,
+  aspectRatio?: Maybe<Scalars['Float']>,
+  width: Scalars['Float'],
+  height: Scalars['Float'],
+  src: Scalars['String'],
+  srcSet: Scalars['String'],
+  srcWebp?: Maybe<Scalars['String']>,
+  srcSetWebp?: Maybe<Scalars['String']>,
+  originalName?: Maybe<Scalars['String']>,
+};
+
+export type ImageSharpFixedFilterInput = {
+  base64?: Maybe<StringQueryOperatorInput>,
+  tracedSVG?: Maybe<StringQueryOperatorInput>,
+  aspectRatio?: Maybe<FloatQueryOperatorInput>,
+  width?: Maybe<FloatQueryOperatorInput>,
+  height?: Maybe<FloatQueryOperatorInput>,
+  src?: Maybe<StringQueryOperatorInput>,
+  srcSet?: Maybe<StringQueryOperatorInput>,
+  srcWebp?: Maybe<StringQueryOperatorInput>,
+  srcSetWebp?: Maybe<StringQueryOperatorInput>,
+  originalName?: Maybe<StringQueryOperatorInput>,
+};
+
+export type ImageSharpFluid = {
+  base64?: Maybe<Scalars['String']>,
+  tracedSVG?: Maybe<Scalars['String']>,
+  aspectRatio: Scalars['Float'],
+  src: Scalars['String'],
+  srcSet: Scalars['String'],
+  srcWebp?: Maybe<Scalars['String']>,
+  srcSetWebp?: Maybe<Scalars['String']>,
+  sizes: Scalars['String'],
+  originalImg?: Maybe<Scalars['String']>,
+  originalName?: Maybe<Scalars['String']>,
+  presentationWidth?: Maybe<Scalars['Int']>,
+  presentationHeight?: Maybe<Scalars['Int']>,
+};
+
+export type ImageSharpFluidFilterInput = {
+  base64?: Maybe<StringQueryOperatorInput>,
+  tracedSVG?: Maybe<StringQueryOperatorInput>,
+  aspectRatio?: Maybe<FloatQueryOperatorInput>,
+  src?: Maybe<StringQueryOperatorInput>,
+  srcSet?: Maybe<StringQueryOperatorInput>,
+  srcWebp?: Maybe<StringQueryOperatorInput>,
+  srcSetWebp?: Maybe<StringQueryOperatorInput>,
+  sizes?: Maybe<StringQueryOperatorInput>,
+  originalImg?: Maybe<StringQueryOperatorInput>,
+  originalName?: Maybe<StringQueryOperatorInput>,
+  presentationWidth?: Maybe<IntQueryOperatorInput>,
+  presentationHeight?: Maybe<IntQueryOperatorInput>,
+};
+
+export type ImageSharpGroupConnection = {
   totalCount: Scalars['Int'],
-  edges: Array<FileEdge>,
-  nodes: Array<File>,
+  edges: Array<ImageSharpEdge>,
+  nodes: Array<ImageSharp>,
   pageInfo: PageInfo,
   field: Scalars['String'],
   fieldValue?: Maybe<Scalars['String']>,
 };
 
-export type FileSortInput = {
-  fields?: Maybe<Array<Maybe<FileFieldsEnum>>>,
-  order?: Maybe<Array<Maybe<SortOrderEnum>>>,
+export type ImageSharpOriginal = {
+  width?: Maybe<Scalars['Float']>,
+  height?: Maybe<Scalars['Float']>,
+  src?: Maybe<Scalars['String']>,
 };
 
-export type FloatQueryOperatorInput = {
-  eq?: Maybe<Scalars['Float']>,
-  ne?: Maybe<Scalars['Float']>,
-  gt?: Maybe<Scalars['Float']>,
-  gte?: Maybe<Scalars['Float']>,
-  lt?: Maybe<Scalars['Float']>,
-  lte?: Maybe<Scalars['Float']>,
-  in?: Maybe<Array<Maybe<Scalars['Float']>>>,
-  nin?: Maybe<Array<Maybe<Scalars['Float']>>>,
+export type ImageSharpOriginalFilterInput = {
+  width?: Maybe<FloatQueryOperatorInput>,
+  height?: Maybe<FloatQueryOperatorInput>,
+  src?: Maybe<StringQueryOperatorInput>,
+};
+
+export type ImageSharpResize = {
+  src?: Maybe<Scalars['String']>,
+  tracedSVG?: Maybe<Scalars['String']>,
+  width?: Maybe<Scalars['Int']>,
+  height?: Maybe<Scalars['Int']>,
+  aspectRatio?: Maybe<Scalars['Float']>,
+  originalName?: Maybe<Scalars['String']>,
+};
+
+export type ImageSharpResizeFilterInput = {
+  src?: Maybe<StringQueryOperatorInput>,
+  tracedSVG?: Maybe<StringQueryOperatorInput>,
+  width?: Maybe<IntQueryOperatorInput>,
+  height?: Maybe<IntQueryOperatorInput>,
+  aspectRatio?: Maybe<FloatQueryOperatorInput>,
+  originalName?: Maybe<StringQueryOperatorInput>,
+};
+
+export type ImageSharpResolutions = {
+  base64?: Maybe<Scalars['String']>,
+  tracedSVG?: Maybe<Scalars['String']>,
+  aspectRatio?: Maybe<Scalars['Float']>,
+  width: Scalars['Float'],
+  height: Scalars['Float'],
+  src: Scalars['String'],
+  srcSet: Scalars['String'],
+  srcWebp?: Maybe<Scalars['String']>,
+  srcSetWebp?: Maybe<Scalars['String']>,
+  originalName?: Maybe<Scalars['String']>,
+};
+
+export type ImageSharpResolutionsFilterInput = {
+  base64?: Maybe<StringQueryOperatorInput>,
+  tracedSVG?: Maybe<StringQueryOperatorInput>,
+  aspectRatio?: Maybe<FloatQueryOperatorInput>,
+  width?: Maybe<FloatQueryOperatorInput>,
+  height?: Maybe<FloatQueryOperatorInput>,
+  src?: Maybe<StringQueryOperatorInput>,
+  srcSet?: Maybe<StringQueryOperatorInput>,
+  srcWebp?: Maybe<StringQueryOperatorInput>,
+  srcSetWebp?: Maybe<StringQueryOperatorInput>,
+  originalName?: Maybe<StringQueryOperatorInput>,
+};
+
+export type ImageSharpSizes = {
+  base64?: Maybe<Scalars['String']>,
+  tracedSVG?: Maybe<Scalars['String']>,
+  aspectRatio: Scalars['Float'],
+  src: Scalars['String'],
+  srcSet: Scalars['String'],
+  srcWebp?: Maybe<Scalars['String']>,
+  srcSetWebp?: Maybe<Scalars['String']>,
+  sizes: Scalars['String'],
+  originalImg?: Maybe<Scalars['String']>,
+  originalName?: Maybe<Scalars['String']>,
+  presentationWidth?: Maybe<Scalars['Int']>,
+  presentationHeight?: Maybe<Scalars['Int']>,
+};
+
+export type ImageSharpSizesFilterInput = {
+  base64?: Maybe<StringQueryOperatorInput>,
+  tracedSVG?: Maybe<StringQueryOperatorInput>,
+  aspectRatio?: Maybe<FloatQueryOperatorInput>,
+  src?: Maybe<StringQueryOperatorInput>,
+  srcSet?: Maybe<StringQueryOperatorInput>,
+  srcWebp?: Maybe<StringQueryOperatorInput>,
+  srcSetWebp?: Maybe<StringQueryOperatorInput>,
+  sizes?: Maybe<StringQueryOperatorInput>,
+  originalImg?: Maybe<StringQueryOperatorInput>,
+  originalName?: Maybe<StringQueryOperatorInput>,
+  presentationWidth?: Maybe<IntQueryOperatorInput>,
+  presentationHeight?: Maybe<IntQueryOperatorInput>,
+};
+
+export type ImageSharpSortInput = {
+  fields?: Maybe<Array<Maybe<ImageSharpFieldsEnum>>>,
+  order?: Maybe<Array<Maybe<SortOrderEnum>>>,
 };
 
 export type Internal = {
@@ -701,11 +1411,391 @@ export type PageInfo = {
   perPage?: Maybe<Scalars['Int']>,
 };
 
+export type Potrace = {
+  turnPolicy?: Maybe<PotraceTurnPolicy>,
+  turdSize?: Maybe<Scalars['Float']>,
+  alphaMax?: Maybe<Scalars['Float']>,
+  optCurve?: Maybe<Scalars['Boolean']>,
+  optTolerance?: Maybe<Scalars['Float']>,
+  threshold?: Maybe<Scalars['Int']>,
+  blackOnWhite?: Maybe<Scalars['Boolean']>,
+  color?: Maybe<Scalars['String']>,
+  background?: Maybe<Scalars['String']>,
+};
+
+export type PotraceTurnPolicy = 
+  'TURNPOLICY_BLACK' |
+  'TURNPOLICY_WHITE' |
+  'TURNPOLICY_LEFT' |
+  'TURNPOLICY_RIGHT' |
+  'TURNPOLICY_MINORITY' |
+  'TURNPOLICY_MAJORITY';
+
+export type ProductsJson = Node & {
+  id: Scalars['ID'],
+  parent?: Maybe<Node>,
+  children: Array<Node>,
+  internal: Internal,
+  title?: Maybe<Scalars['String']>,
+  slug?: Maybe<Scalars['String']>,
+  description?: Maybe<Scalars['String']>,
+  price?: Maybe<Scalars['String']>,
+  image?: Maybe<File>,
+};
+
+export type ProductsJsonConnection = {
+  totalCount: Scalars['Int'],
+  edges: Array<ProductsJsonEdge>,
+  nodes: Array<ProductsJson>,
+  pageInfo: PageInfo,
+  distinct: Array<Scalars['String']>,
+  group: Array<ProductsJsonGroupConnection>,
+};
+
+
+export type ProductsJsonConnectionDistinctArgs = {
+  field: ProductsJsonFieldsEnum
+};
+
+
+export type ProductsJsonConnectionGroupArgs = {
+  skip?: Maybe<Scalars['Int']>,
+  limit?: Maybe<Scalars['Int']>,
+  field: ProductsJsonFieldsEnum
+};
+
+export type ProductsJsonEdge = {
+  next?: Maybe<ProductsJson>,
+  node: ProductsJson,
+  previous?: Maybe<ProductsJson>,
+};
+
+export type ProductsJsonFieldsEnum = 
+  'id' |
+  'parent___id' |
+  'parent___parent___id' |
+  'parent___parent___parent___id' |
+  'parent___parent___parent___children' |
+  'parent___parent___children' |
+  'parent___parent___children___id' |
+  'parent___parent___children___children' |
+  'parent___parent___internal___content' |
+  'parent___parent___internal___contentDigest' |
+  'parent___parent___internal___description' |
+  'parent___parent___internal___fieldOwners' |
+  'parent___parent___internal___ignoreType' |
+  'parent___parent___internal___mediaType' |
+  'parent___parent___internal___owner' |
+  'parent___parent___internal___type' |
+  'parent___children' |
+  'parent___children___id' |
+  'parent___children___parent___id' |
+  'parent___children___parent___children' |
+  'parent___children___children' |
+  'parent___children___children___id' |
+  'parent___children___children___children' |
+  'parent___children___internal___content' |
+  'parent___children___internal___contentDigest' |
+  'parent___children___internal___description' |
+  'parent___children___internal___fieldOwners' |
+  'parent___children___internal___ignoreType' |
+  'parent___children___internal___mediaType' |
+  'parent___children___internal___owner' |
+  'parent___children___internal___type' |
+  'parent___internal___content' |
+  'parent___internal___contentDigest' |
+  'parent___internal___description' |
+  'parent___internal___fieldOwners' |
+  'parent___internal___ignoreType' |
+  'parent___internal___mediaType' |
+  'parent___internal___owner' |
+  'parent___internal___type' |
+  'children' |
+  'children___id' |
+  'children___parent___id' |
+  'children___parent___parent___id' |
+  'children___parent___parent___children' |
+  'children___parent___children' |
+  'children___parent___children___id' |
+  'children___parent___children___children' |
+  'children___parent___internal___content' |
+  'children___parent___internal___contentDigest' |
+  'children___parent___internal___description' |
+  'children___parent___internal___fieldOwners' |
+  'children___parent___internal___ignoreType' |
+  'children___parent___internal___mediaType' |
+  'children___parent___internal___owner' |
+  'children___parent___internal___type' |
+  'children___children' |
+  'children___children___id' |
+  'children___children___parent___id' |
+  'children___children___parent___children' |
+  'children___children___children' |
+  'children___children___children___id' |
+  'children___children___children___children' |
+  'children___children___internal___content' |
+  'children___children___internal___contentDigest' |
+  'children___children___internal___description' |
+  'children___children___internal___fieldOwners' |
+  'children___children___internal___ignoreType' |
+  'children___children___internal___mediaType' |
+  'children___children___internal___owner' |
+  'children___children___internal___type' |
+  'children___internal___content' |
+  'children___internal___contentDigest' |
+  'children___internal___description' |
+  'children___internal___fieldOwners' |
+  'children___internal___ignoreType' |
+  'children___internal___mediaType' |
+  'children___internal___owner' |
+  'children___internal___type' |
+  'internal___content' |
+  'internal___contentDigest' |
+  'internal___description' |
+  'internal___fieldOwners' |
+  'internal___ignoreType' |
+  'internal___mediaType' |
+  'internal___owner' |
+  'internal___type' |
+  'title' |
+  'slug' |
+  'description' |
+  'price' |
+  'image___sourceInstanceName' |
+  'image___absolutePath' |
+  'image___relativePath' |
+  'image___extension' |
+  'image___size' |
+  'image___prettySize' |
+  'image___modifiedTime' |
+  'image___accessTime' |
+  'image___changeTime' |
+  'image___birthTime' |
+  'image___root' |
+  'image___dir' |
+  'image___base' |
+  'image___ext' |
+  'image___name' |
+  'image___relativeDirectory' |
+  'image___dev' |
+  'image___mode' |
+  'image___nlink' |
+  'image___uid' |
+  'image___gid' |
+  'image___rdev' |
+  'image___ino' |
+  'image___atimeMs' |
+  'image___mtimeMs' |
+  'image___ctimeMs' |
+  'image___atime' |
+  'image___mtime' |
+  'image___ctime' |
+  'image___birthtime' |
+  'image___birthtimeMs' |
+  'image___blksize' |
+  'image___blocks' |
+  'image___publicURL' |
+  'image___childImageSharp___fixed___base64' |
+  'image___childImageSharp___fixed___tracedSVG' |
+  'image___childImageSharp___fixed___aspectRatio' |
+  'image___childImageSharp___fixed___width' |
+  'image___childImageSharp___fixed___height' |
+  'image___childImageSharp___fixed___src' |
+  'image___childImageSharp___fixed___srcSet' |
+  'image___childImageSharp___fixed___srcWebp' |
+  'image___childImageSharp___fixed___srcSetWebp' |
+  'image___childImageSharp___fixed___originalName' |
+  'image___childImageSharp___resolutions___base64' |
+  'image___childImageSharp___resolutions___tracedSVG' |
+  'image___childImageSharp___resolutions___aspectRatio' |
+  'image___childImageSharp___resolutions___width' |
+  'image___childImageSharp___resolutions___height' |
+  'image___childImageSharp___resolutions___src' |
+  'image___childImageSharp___resolutions___srcSet' |
+  'image___childImageSharp___resolutions___srcWebp' |
+  'image___childImageSharp___resolutions___srcSetWebp' |
+  'image___childImageSharp___resolutions___originalName' |
+  'image___childImageSharp___fluid___base64' |
+  'image___childImageSharp___fluid___tracedSVG' |
+  'image___childImageSharp___fluid___aspectRatio' |
+  'image___childImageSharp___fluid___src' |
+  'image___childImageSharp___fluid___srcSet' |
+  'image___childImageSharp___fluid___srcWebp' |
+  'image___childImageSharp___fluid___srcSetWebp' |
+  'image___childImageSharp___fluid___sizes' |
+  'image___childImageSharp___fluid___originalImg' |
+  'image___childImageSharp___fluid___originalName' |
+  'image___childImageSharp___fluid___presentationWidth' |
+  'image___childImageSharp___fluid___presentationHeight' |
+  'image___childImageSharp___sizes___base64' |
+  'image___childImageSharp___sizes___tracedSVG' |
+  'image___childImageSharp___sizes___aspectRatio' |
+  'image___childImageSharp___sizes___src' |
+  'image___childImageSharp___sizes___srcSet' |
+  'image___childImageSharp___sizes___srcWebp' |
+  'image___childImageSharp___sizes___srcSetWebp' |
+  'image___childImageSharp___sizes___sizes' |
+  'image___childImageSharp___sizes___originalImg' |
+  'image___childImageSharp___sizes___originalName' |
+  'image___childImageSharp___sizes___presentationWidth' |
+  'image___childImageSharp___sizes___presentationHeight' |
+  'image___childImageSharp___original___width' |
+  'image___childImageSharp___original___height' |
+  'image___childImageSharp___original___src' |
+  'image___childImageSharp___resize___src' |
+  'image___childImageSharp___resize___tracedSVG' |
+  'image___childImageSharp___resize___width' |
+  'image___childImageSharp___resize___height' |
+  'image___childImageSharp___resize___aspectRatio' |
+  'image___childImageSharp___resize___originalName' |
+  'image___childImageSharp___id' |
+  'image___childImageSharp___parent___id' |
+  'image___childImageSharp___parent___children' |
+  'image___childImageSharp___children' |
+  'image___childImageSharp___children___id' |
+  'image___childImageSharp___children___children' |
+  'image___childImageSharp___internal___content' |
+  'image___childImageSharp___internal___contentDigest' |
+  'image___childImageSharp___internal___description' |
+  'image___childImageSharp___internal___fieldOwners' |
+  'image___childImageSharp___internal___ignoreType' |
+  'image___childImageSharp___internal___mediaType' |
+  'image___childImageSharp___internal___owner' |
+  'image___childImageSharp___internal___type' |
+  'image___id' |
+  'image___parent___id' |
+  'image___parent___parent___id' |
+  'image___parent___parent___children' |
+  'image___parent___children' |
+  'image___parent___children___id' |
+  'image___parent___children___children' |
+  'image___parent___internal___content' |
+  'image___parent___internal___contentDigest' |
+  'image___parent___internal___description' |
+  'image___parent___internal___fieldOwners' |
+  'image___parent___internal___ignoreType' |
+  'image___parent___internal___mediaType' |
+  'image___parent___internal___owner' |
+  'image___parent___internal___type' |
+  'image___children' |
+  'image___children___id' |
+  'image___children___parent___id' |
+  'image___children___parent___children' |
+  'image___children___children' |
+  'image___children___children___id' |
+  'image___children___children___children' |
+  'image___children___internal___content' |
+  'image___children___internal___contentDigest' |
+  'image___children___internal___description' |
+  'image___children___internal___fieldOwners' |
+  'image___children___internal___ignoreType' |
+  'image___children___internal___mediaType' |
+  'image___children___internal___owner' |
+  'image___children___internal___type' |
+  'image___internal___content' |
+  'image___internal___contentDigest' |
+  'image___internal___description' |
+  'image___internal___fieldOwners' |
+  'image___internal___ignoreType' |
+  'image___internal___mediaType' |
+  'image___internal___owner' |
+  'image___internal___type' |
+  'image___childrenProductsJson' |
+  'image___childrenProductsJson___id' |
+  'image___childrenProductsJson___parent___id' |
+  'image___childrenProductsJson___parent___children' |
+  'image___childrenProductsJson___children' |
+  'image___childrenProductsJson___children___id' |
+  'image___childrenProductsJson___children___children' |
+  'image___childrenProductsJson___internal___content' |
+  'image___childrenProductsJson___internal___contentDigest' |
+  'image___childrenProductsJson___internal___description' |
+  'image___childrenProductsJson___internal___fieldOwners' |
+  'image___childrenProductsJson___internal___ignoreType' |
+  'image___childrenProductsJson___internal___mediaType' |
+  'image___childrenProductsJson___internal___owner' |
+  'image___childrenProductsJson___internal___type' |
+  'image___childrenProductsJson___title' |
+  'image___childrenProductsJson___slug' |
+  'image___childrenProductsJson___description' |
+  'image___childrenProductsJson___price' |
+  'image___childrenProductsJson___image___sourceInstanceName' |
+  'image___childrenProductsJson___image___absolutePath' |
+  'image___childrenProductsJson___image___relativePath' |
+  'image___childrenProductsJson___image___extension' |
+  'image___childrenProductsJson___image___size' |
+  'image___childrenProductsJson___image___prettySize' |
+  'image___childrenProductsJson___image___modifiedTime' |
+  'image___childrenProductsJson___image___accessTime' |
+  'image___childrenProductsJson___image___changeTime' |
+  'image___childrenProductsJson___image___birthTime' |
+  'image___childrenProductsJson___image___root' |
+  'image___childrenProductsJson___image___dir' |
+  'image___childrenProductsJson___image___base' |
+  'image___childrenProductsJson___image___ext' |
+  'image___childrenProductsJson___image___name' |
+  'image___childrenProductsJson___image___relativeDirectory' |
+  'image___childrenProductsJson___image___dev' |
+  'image___childrenProductsJson___image___mode' |
+  'image___childrenProductsJson___image___nlink' |
+  'image___childrenProductsJson___image___uid' |
+  'image___childrenProductsJson___image___gid' |
+  'image___childrenProductsJson___image___rdev' |
+  'image___childrenProductsJson___image___ino' |
+  'image___childrenProductsJson___image___atimeMs' |
+  'image___childrenProductsJson___image___mtimeMs' |
+  'image___childrenProductsJson___image___ctimeMs' |
+  'image___childrenProductsJson___image___atime' |
+  'image___childrenProductsJson___image___mtime' |
+  'image___childrenProductsJson___image___ctime' |
+  'image___childrenProductsJson___image___birthtime' |
+  'image___childrenProductsJson___image___birthtimeMs' |
+  'image___childrenProductsJson___image___blksize' |
+  'image___childrenProductsJson___image___blocks' |
+  'image___childrenProductsJson___image___publicURL' |
+  'image___childrenProductsJson___image___id' |
+  'image___childrenProductsJson___image___children' |
+  'image___childrenProductsJson___image___childrenProductsJson';
+
+export type ProductsJsonFilterInput = {
+  id?: Maybe<StringQueryOperatorInput>,
+  parent?: Maybe<NodeFilterInput>,
+  children?: Maybe<NodeFilterListInput>,
+  internal?: Maybe<InternalFilterInput>,
+  title?: Maybe<StringQueryOperatorInput>,
+  slug?: Maybe<StringQueryOperatorInput>,
+  description?: Maybe<StringQueryOperatorInput>,
+  price?: Maybe<StringQueryOperatorInput>,
+  image?: Maybe<FileFilterInput>,
+};
+
+export type ProductsJsonFilterListInput = {
+  elemMatch?: Maybe<ProductsJsonFilterInput>,
+};
+
+export type ProductsJsonGroupConnection = {
+  totalCount: Scalars['Int'],
+  edges: Array<ProductsJsonEdge>,
+  nodes: Array<ProductsJson>,
+  pageInfo: PageInfo,
+  field: Scalars['String'],
+  fieldValue?: Maybe<Scalars['String']>,
+};
+
+export type ProductsJsonSortInput = {
+  fields?: Maybe<Array<Maybe<ProductsJsonFieldsEnum>>>,
+  order?: Maybe<Array<Maybe<SortOrderEnum>>>,
+};
+
 export type Query = {
   file?: Maybe<File>,
   allFile: FileConnection,
   directory?: Maybe<Directory>,
   allDirectory: DirectoryConnection,
+  imageSharp?: Maybe<ImageSharp>,
+  allImageSharp: ImageSharpConnection,
+  productsJson?: Maybe<ProductsJson>,
+  allProductsJson: ProductsJsonConnection,
   site?: Maybe<Site>,
   allSite: SiteConnection,
   sitePlugin?: Maybe<SitePlugin>,
@@ -747,10 +1837,15 @@ export type QueryFileArgs = {
   ctime?: Maybe<DateQueryOperatorInput>,
   birthtime?: Maybe<DateQueryOperatorInput>,
   birthtimeMs?: Maybe<FloatQueryOperatorInput>,
+  blksize?: Maybe<IntQueryOperatorInput>,
+  blocks?: Maybe<IntQueryOperatorInput>,
+  publicURL?: Maybe<StringQueryOperatorInput>,
+  childImageSharp?: Maybe<ImageSharpFilterInput>,
   id?: Maybe<StringQueryOperatorInput>,
   parent?: Maybe<NodeFilterInput>,
   children?: Maybe<NodeFilterListInput>,
-  internal?: Maybe<InternalFilterInput>
+  internal?: Maybe<InternalFilterInput>,
+  childrenProductsJson?: Maybe<ProductsJsonFilterListInput>
 };
 
 
@@ -794,6 +1889,8 @@ export type QueryDirectoryArgs = {
   ctime?: Maybe<DateQueryOperatorInput>,
   birthtime?: Maybe<DateQueryOperatorInput>,
   birthtimeMs?: Maybe<FloatQueryOperatorInput>,
+  blksize?: Maybe<IntQueryOperatorInput>,
+  blocks?: Maybe<IntQueryOperatorInput>,
   id?: Maybe<StringQueryOperatorInput>,
   parent?: Maybe<NodeFilterInput>,
   children?: Maybe<NodeFilterListInput>,
@@ -809,14 +1906,55 @@ export type QueryAllDirectoryArgs = {
 };
 
 
+export type QueryImageSharpArgs = {
+  fixed?: Maybe<ImageSharpFixedFilterInput>,
+  resolutions?: Maybe<ImageSharpResolutionsFilterInput>,
+  fluid?: Maybe<ImageSharpFluidFilterInput>,
+  sizes?: Maybe<ImageSharpSizesFilterInput>,
+  original?: Maybe<ImageSharpOriginalFilterInput>,
+  resize?: Maybe<ImageSharpResizeFilterInput>,
+  id?: Maybe<StringQueryOperatorInput>,
+  parent?: Maybe<NodeFilterInput>,
+  children?: Maybe<NodeFilterListInput>,
+  internal?: Maybe<InternalFilterInput>
+};
+
+
+export type QueryAllImageSharpArgs = {
+  filter?: Maybe<ImageSharpFilterInput>,
+  sort?: Maybe<ImageSharpSortInput>,
+  skip?: Maybe<Scalars['Int']>,
+  limit?: Maybe<Scalars['Int']>
+};
+
+
+export type QueryProductsJsonArgs = {
+  id?: Maybe<StringQueryOperatorInput>,
+  parent?: Maybe<NodeFilterInput>,
+  children?: Maybe<NodeFilterListInput>,
+  internal?: Maybe<InternalFilterInput>,
+  title?: Maybe<StringQueryOperatorInput>,
+  slug?: Maybe<StringQueryOperatorInput>,
+  description?: Maybe<StringQueryOperatorInput>,
+  price?: Maybe<StringQueryOperatorInput>,
+  image?: Maybe<FileFilterInput>
+};
+
+
+export type QueryAllProductsJsonArgs = {
+  filter?: Maybe<ProductsJsonFilterInput>,
+  sort?: Maybe<ProductsJsonSortInput>,
+  skip?: Maybe<Scalars['Int']>,
+  limit?: Maybe<Scalars['Int']>
+};
+
+
 export type QuerySiteArgs = {
   id?: Maybe<StringQueryOperatorInput>,
   parent?: Maybe<NodeFilterInput>,
   children?: Maybe<NodeFilterListInput>,
   internal?: Maybe<InternalFilterInput>,
   siteMetadata?: Maybe<SiteSiteMetadataFilterInput>,
-  port?: Maybe<IntQueryOperatorInput>,
-  host?: Maybe<StringQueryOperatorInput>,
   polyfill?: Maybe<BooleanQueryOperatorInput>,
   pathPrefix?: Maybe<StringQueryOperatorInput>,
   buildTime?: Maybe<DateQueryOperatorInput>
@@ -885,8 +2023,6 @@ export type Site = Node & {
   children: Array<Node>,
   internal: Internal,
   siteMetadata?: Maybe<SiteSiteMetadata>,
-  port?: Maybe<Scalars['Int']>,
-  host?: Maybe<Scalars['String']>,
   polyfill?: Maybe<Scalars['Boolean']>,
   pathPrefix?: Maybe<Scalars['String']>,
   buildTime?: Maybe<Scalars['Date']>,
@@ -1018,8 +2154,6 @@ export type SiteFieldsEnum =
   'siteMetadata___authors' |
   'siteMetadata___authors___name' |
   'siteMetadata___authors___slug' |
-  'port' |
-  'host' |
   'polyfill' |
   'pathPrefix' |
   'buildTime';
@@ -1030,8 +2164,6 @@ export type SiteFilterInput = {
   children?: Maybe<NodeFilterListInput>,
   internal?: Maybe<InternalFilterInput>,
   siteMetadata?: Maybe<SiteSiteMetadataFilterInput>,
-  port?: Maybe<IntQueryOperatorInput>,
-  host?: Maybe<StringQueryOperatorInput>,
   polyfill?: Maybe<BooleanQueryOperatorInput>,
   pathPrefix?: Maybe<StringQueryOperatorInput>,
   buildTime?: Maybe<DateQueryOperatorInput>,
@@ -1085,6 +2217,7 @@ export type SitePageConnectionGroupArgs = {
 
 export type SitePageContext = {
   author?: Maybe<SitePageContextAuthor>,
+  slug?: Maybe<Scalars['String']>,
 };
 
 export type SitePageContextAuthor = {
@@ -1099,6 +2232,7 @@ export type SitePageContextAuthorFilterInput = {
 
 export type SitePageContextFilterInput = {
   author?: Maybe<SitePageContextAuthorFilterInput>,
+  slug?: Maybe<StringQueryOperatorInput>,
 };
 
 export type SitePageEdge = {
@@ -1201,6 +2335,7 @@ export type SitePageFieldsEnum =
   'isCreatedByStatefulCreatePages' |
   'context___author___name' |
   'context___author___slug' |
+  'context___slug' |
   'pluginCreator___id' |
   'pluginCreator___parent___id' |
   'pluginCreator___parent___parent___id' |
@@ -1608,3 +2743,51 @@ export type IndexHogeQueryVariables = {};
 
 
 export type IndexHogeQuery = { site: Maybe<{ siteMetadata: Maybe<Pick<SiteSiteMetadata, 'title'>> }> };
+
+export type GatsbyImageSharpFixedFragment = Pick<ImageSharpFixed, 'base64' | 'width' | 'height' | 'src' | 'srcSet'>;
+
+export type GatsbyImageSharpFixed_TracedSvgFragment = Pick<ImageSharpFixed, 'tracedSVG' | 'width' | 'height' | 'src' | 'srcSet'>;
+
+export type GatsbyImageSharpFixed_WithWebpFragment = Pick<ImageSharpFixed, 'base64' | 'width' | 'height' | 'src' | 'srcSet' | 'srcWebp' | 'srcSetWebp'>;
+
+export type GatsbyImageSharpFixed_WithWebp_TracedSvgFragment = Pick<ImageSharpFixed, 'tracedSVG' | 'width' | 'height' | 'src' | 'srcSet' | 'srcWebp' | 'srcSetWebp'>;
+
+export type GatsbyImageSharpFixed_NoBase64Fragment = Pick<ImageSharpFixed, 'width' | 'height' | 'src' | 'srcSet'>;
+
+export type GatsbyImageSharpFixed_WithWebp_NoBase64Fragment = Pick<ImageSharpFixed, 'width' | 'height' | 'src' | 'srcSet' | 'srcWebp' | 'srcSetWebp'>;
+
+export type GatsbyImageSharpFluidFragment = Pick<ImageSharpFluid, 'base64' | 'aspectRatio' | 'src' | 'srcSet' | 'sizes'>;
+
+export type GatsbyImageSharpFluid_TracedSvgFragment = Pick<ImageSharpFluid, 'tracedSVG' | 'aspectRatio' | 'src' | 'srcSet' | 'sizes'>;
+
+export type GatsbyImageSharpFluid_WithWebpFragment = Pick<ImageSharpFluid, 'base64' | 'aspectRatio' | 'src' | 'srcSet' | 'srcWebp' | 'srcSetWebp' | 'sizes'>;
+
+export type GatsbyImageSharpFluid_WithWebp_TracedSvgFragment = Pick<ImageSharpFluid, 'tracedSVG' | 'aspectRatio' | 'src' | 'srcSet' | 'srcWebp' | 'srcSetWebp' | 'sizes'>;
+
+export type GatsbyImageSharpFluid_NoBase64Fragment = Pick<ImageSharpFluid, 'aspectRatio' | 'src' | 'srcSet' | 'sizes'>;
+
+export type GatsbyImageSharpFluid_WithWebp_NoBase64Fragment = Pick<ImageSharpFluid, 'aspectRatio' | 'src' | 'srcSet' | 'srcWebp' | 'srcSetWebp' | 'sizes'>;
+
+export type GatsbyImageSharpResolutionsFragment = Pick<ImageSharpResolutions, 'base64' | 'width' | 'height' | 'src' | 'srcSet'>;
+
+export type GatsbyImageSharpResolutions_TracedSvgFragment = Pick<ImageSharpResolutions, 'tracedSVG' | 'width' | 'height' | 'src' | 'srcSet'>;
+
+export type GatsbyImageSharpResolutions_WithWebpFragment = Pick<ImageSharpResolutions, 'base64' | 'width' | 'height' | 'src' | 'srcSet' | 'srcWebp' | 'srcSetWebp'>;
+
+export type GatsbyImageSharpResolutions_WithWebp_TracedSvgFragment = Pick<ImageSharpResolutions, 'tracedSVG' | 'width' | 'height' | 'src' | 'srcSet' | 'srcWebp' | 'srcSetWebp'>;
+
+export type GatsbyImageSharpResolutions_NoBase64Fragment = Pick<ImageSharpResolutions, 'width' | 'height' | 'src' | 'srcSet'>;
+
+export type GatsbyImageSharpResolutions_WithWebp_NoBase64Fragment = Pick<ImageSharpResolutions, 'width' | 'height' | 'src' | 'srcSet' | 'srcWebp' | 'srcSetWebp'>;
+
+export type GatsbyImageSharpSizesFragment = Pick<ImageSharpSizes, 'base64' | 'aspectRatio' | 'src' | 'srcSet' | 'sizes'>;
+
+export type GatsbyImageSharpSizes_TracedSvgFragment = Pick<ImageSharpSizes, 'tracedSVG' | 'aspectRatio' | 'src' | 'srcSet' | 'sizes'>;
+
+export type GatsbyImageSharpSizes_WithWebpFragment = Pick<ImageSharpSizes, 'base64' | 'aspectRatio' | 'src' | 'srcSet' | 'srcWebp' | 'srcSetWebp' | 'sizes'>;
+
+export type GatsbyImageSharpSizes_WithWebp_TracedSvgFragment = Pick<ImageSharpSizes, 'tracedSVG' | 'aspectRatio' | 'src' | 'srcSet' | 'srcWebp' | 'srcSetWebp' | 'sizes'>;
+
+export type GatsbyImageSharpSizes_NoBase64Fragment = Pick<ImageSharpSizes, 'aspectRatio' | 'src' | 'srcSet' | 'sizes'>;
+
+export type GatsbyImageSharpSizes_WithWebp_NoBase64Fragment = Pick<ImageSharpSizes, 'aspectRatio' | 'src' | 'srcSet' | 'srcWebp' | 'srcSetWebp' | 'sizes'>;
